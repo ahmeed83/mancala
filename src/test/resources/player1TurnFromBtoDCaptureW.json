@@ -1,0 +1,63 @@
+{
+  "gameId": "09f5cc11-ec7c-4344-8022-5b6ab11546ea",
+  "pits": [
+    {
+      "pitPlace": "PLAYER_ONE_PIT_A",
+      "stones": 6
+    },
+    {
+      "pitPlace": "PLAYER_ONE_PIT_B",
+      "stones": 0
+    },
+    {
+      "pitPlace": "PLAYER_ONE_PIT_C",
+      "stones": 7
+    },
+    {
+      "pitPlace": "PLAYER_ONE_PIT_D",
+      "stones": 0
+    },
+    {
+      "pitPlace": "PLAYER_ONE_PIT_E",
+      "stones": 6
+    },
+    {
+      "pitPlace": "PLAYER_ONE_PIT_F",
+      "stones": 6
+    },
+    {
+      "pitPlace": "PLAYER_ONE_PIT_BIG",
+      "stones": 6
+    },
+    {
+      "pitPlace": "PLAYER_TWO_PIT_U",
+      "stones": 6
+    },
+    {
+      "pitPlace": "PLAYER_TWO_PIT_V",
+      "stones": 6
+    },
+    {
+      "pitPlace": "PLAYER_TWO_PIT_W",
+      "stones": 0
+    },
+    {
+      "pitPlace": "PLAYER_TWO_PIT_X",
+      "stones": 6
+    },
+    {
+      "pitPlace": "PLAYER_TWO_PIT_Y",
+      "stones": 6
+    },
+    {
+      "pitPlace": "PLAYER_TWO_PIT_Z",
+      "stones": 6
+    },
+    {
+      "pitPlace": "PLAYER_TWO_PIT_BIG",
+      "stones": 0
+    }
+  ],
+  "player": "PLAYER_2",
+  "playerWinner": null
+}
