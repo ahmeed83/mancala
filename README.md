@@ -26,6 +26,8 @@ Start the server
 ```bash
   mvn spring-boot:run
 ```
+Application will start on 
+[localhost:5000](http://localhost:5000)
 
 ## API Reference
 
