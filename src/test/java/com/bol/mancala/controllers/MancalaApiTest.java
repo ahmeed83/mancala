@@ -483,7 +483,7 @@ class MancalaApiTest {
      */
     private PlayTurnRequest selectPit(PitPlace pitPlace) {
         return PlayTurnRequest.builder()
-                .gameId(String.valueOf(mockUUID))
+                .gameId(mockUUID)
                 .selectedPit(pitPlace)
                 .build();
     }

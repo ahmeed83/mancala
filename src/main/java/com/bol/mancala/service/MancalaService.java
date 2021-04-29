@@ -108,8 +108,8 @@ public class MancalaService {
      *
      * @param gameId the game id the is previously created by the startMancala endpoint.
      */
-    public void deleteMancala(final String gameId) {
-        final MancalaEntity mancala = mancalaRepository.findById(UUID.fromString(gameId))
+    public void deleteMancala(final UUID gameId) {
+        final MancalaEntity mancala = mancalaRepository.findById(gameId)
                 .orElseThrow(MancalaNotFoundException::new);
         mancalaRepository.delete(mancala);
     }
@@ -130,10 +130,10 @@ public class MancalaService {
      * @param pitId  pit Id
      * @return updated Mancala Game.
      */
-    public MancalaGame updateGame(final String gameId, final PitPlace pitId) {
+    public MancalaGame updateGame(final UUID gameId, final PitPlace pitId) {
         
         // Get the Mancala Game from the Database by the Game ID
-        final var mancalaEntity = mancalaRepository.findById(UUID.fromString(String.valueOf(gameId)))
+        final var mancalaEntity = mancalaRepository.findById(gameId)
                 .orElseThrow(MancalaNotFoundException::new);
 
         // Validate selected pit

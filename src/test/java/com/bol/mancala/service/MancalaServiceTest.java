@@ -69,12 +69,12 @@ class MancalaServiceTest {
     /**
      * String of mancala UUID.
      */
-    private String stringMancalaUUID;
+    private UUID stringMancalaUUID;
 
     /**
      * Mancala Entity.
      */
-    private MancalaEntity mancalaEntity;;
+    private MancalaEntity mancalaEntity;
     
     /**
      * Mock Mancala Repository.
@@ -120,7 +120,7 @@ class MancalaServiceTest {
                                             pitNotExistsValidator, pitBigSelectedValidator,
                                             mockMancalaRepository);
         mancalaUUID = UUID.randomUUID();
-        stringMancalaUUID = String.valueOf(mancalaUUID);
+        stringMancalaUUID = mancalaUUID;
         mancalaEntity = new MancalaEntity(mancalaUUID, startStoneAmount);
         ReflectionTestUtils.setField(mancalaService, "startStoneAmount", startStoneAmount);
     }

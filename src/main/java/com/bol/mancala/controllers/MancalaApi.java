@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 /**
  * Mancala API to take the request from the frontend.
@@ -45,7 +46,7 @@ public class MancalaApi {
      * @param gameId the game id.
      */
     @DeleteMapping("/delete-game/{gameId}")
-    public ResponseEntity<HttpStatus> deleteMancala(@PathVariable final String gameId) {
+    public ResponseEntity<HttpStatus> deleteMancala(@PathVariable final UUID gameId) {
         mancalaService.deleteMancala(gameId);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
