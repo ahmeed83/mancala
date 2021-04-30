@@ -287,14 +287,14 @@ public class MancalaService {
      * play one more time. Otherwise the next player will have the turn.
      *
      * @param mancalaGame mancala game
-     * @param newPitIndex the pit index where the current player end at.
+     * @param currentPitIndex the pit index where the current player end at.
      */
-    private void determineNextPlayer(final MancalaGame mancalaGame, final int newPitIndex) {
-        final var pitIndexBigPitPlayerOne = PLAYER_ONE_PIT_BIG.ordinal();
-        final var pitIndexBigPitPlayerTwo = PLAYER_TWO_PIT_BIG.ordinal();
-        if (mancalaGame.getPlayer().equals(PLAYER_1) && newPitIndex != pitIndexBigPitPlayerOne) {
+    private void determineNextPlayer(final MancalaGame mancalaGame, final int currentPitIndex) {
+        if (mancalaGame.getPlayer().equals(PLAYER_1) 
+                && currentPitIndex != PLAYER_ONE_PIT_BIG.ordinal()) {
             mancalaGame.setPlayer(PLAYER_2);
-        } else if (mancalaGame.getPlayer().equals(PLAYER_2) && newPitIndex != pitIndexBigPitPlayerTwo) {
+        } else if (mancalaGame.getPlayer().equals(PLAYER_2) 
+                && currentPitIndex != PLAYER_TWO_PIT_BIG.ordinal()) {
             mancalaGame.setPlayer(PLAYER_1);
         }
     }
