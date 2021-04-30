@@ -155,7 +155,7 @@ public class MancalaService {
 
         // Check if one of the Players wins. Add the winner accordingly and delete the game from the db. 
         // If there is no winner, save the game in the database. 
-        addWinnerIfAnyAndUpdateEntity(mancalaGame);
+        setWinnerIfAnyAndUpdateEntity(mancalaGame);
 
         // return the Mancala Game
         return mancalaGame;
@@ -301,19 +301,33 @@ public class MancalaService {
 
     /**
      * Check if the pits of the current player or the opponent player are empty. If so decide the winner
-     * based on the total of the stones in each big pit. The one who has more stones in his own big bit, is
-     * the winner. After adding the winner, delete the game from the database.
-     * If there is no winner, save the game again in the database.
+     * based on the total of the stones in each big pit. The total will be counted based on all pits available.
+     * After the the stones are add to opponent player, empty the pit list.
+     * The one who has more stones in his own big bit, is the winner. After adding the winner,
+     * delete the game from the database. If there is no winner, save the game again in the database.
      *
      * @param mancalaGame mancala game.
      */
-    private void addWinnerIfAnyAndUpdateEntity(final MancalaGame mancalaGame) {
-        final var amountOfPitsEachPlayerHas = 6;
-        final long playerOneEmptyPitsSize = countAllEmptyPitsForPlayer(mancalaGame, PLAYER_1);
-        final long playerTwoEmptyPitsSize = countAllEmptyPitsForPlayer(mancalaGame, PLAYER_2);
-        if (playerOneEmptyPitsSize == amountOfPitsEachPlayerHas || playerTwoEmptyPitsSize == amountOfPitsEachPlayerHas) {
-            final var bigBitPlayer1 = mancalaGame.getPitGame(PLAYER_ONE_PIT_BIG.ordinal());
-            final var bigBitPlayer2 = mancalaGame.getPitGame(PLAYER_TWO_PIT_BIG.ordinal());
+    private void setWinnerIfAnyAndUpdateEntity(final MancalaGame mancalaGame) {
+        final var bigBitPlayer1 = mancalaGame.getPitGame(PLAYER_ONE_PIT_BIG.ordinal());
+        final var bigBitPlayer2 = mancalaGame.getPitGame(PLAYER_TWO_PIT_BIG.ordinal());
+        List<PitPlace> pitsPlayer1 = List.of(PLAYER_ONE_PIT_A, PLAYER_ONE_PIT_B, PLAYER_ONE_PIT_C, PLAYER_ONE_PIT_D,
+                                             PLAYER_ONE_PIT_E, PLAYER_ONE_PIT_F);
+        List<PitPlace> pitsPlayer2 = List.of(PLAYER_TWO_PIT_U, PLAYER_TWO_PIT_V, PLAYER_TWO_PIT_W, PLAYER_TWO_PIT_X,
+                                             PLAYER_TWO_PIT_Y, PLAYER_TWO_PIT_Z);
+
+        if (arePitsEmptyForPlayer(mancalaGame.getPits(), pitsPlayer1)) {
+            bigBitPlayer2.addStonesToBigPit(getSumStonesForPlayer(mancalaGame.getPits(), pitsPlayer2));
+            emptyGamePitsFromStonesForPlayer(mancalaGame, pitsPlayer2);
+            if (bigBitPlayer1.getStones() > bigBitPlayer2.getStones()) {
+                mancalaGame.setPlayerWinner(PLAYER_1);
+            } else {
+                mancalaGame.setPlayerWinner(PLAYER_2);
+            }
+            mancalaRepository.delete(mapMancalaGameToMancalaEntity(mancalaGame));
+        } else if (arePitsEmptyForPlayer(mancalaGame.getPits(), pitsPlayer2)) {
+            bigBitPlayer1.addStonesToBigPit(getSumStonesForPlayer(mancalaGame.getPits(), pitsPlayer1));
+            emptyGamePitsFromStonesForPlayer(mancalaGame, pitsPlayer1);
             if (bigBitPlayer1.getStones() > bigBitPlayer2.getStones()) {
                 mancalaGame.setPlayerWinner(PLAYER_1);
             } else {
@@ -326,26 +340,45 @@ public class MancalaService {
     }
 
     /**
-     * List with empty stones for a player.
+     * Are all the pits for the provided player empty from stones?
+     *
+     * @param pitsGame all game pits
+     * @param pits     player pits
+     * @return check if all the provided player pits are empty
+     */
+    private boolean arePitsEmptyForPlayer(final List<PitGame> pitsGame, final List<PitPlace> pits) {
+        return pitsGame.stream()
+                .filter(p -> pits.contains(p.getPitPlace()))
+                .allMatch(p -> p.getStones() == 0);
+    }
+
+    /**
+     * Get the sum of the stones in all pits for the provided player.
+     *
+     * @param pitsGame all game pits
+     * @param pits     player pits
+     * @return sum of the stones in all pits.
+     */
+    private int getSumStonesForPlayer(final List<PitGame> pitsGame, final List<PitPlace> pits) {
+        return pitsGame.stream()
+                .filter(p -> pits.contains(p.getPitPlace()))
+                .map(PitGame::getStones)
+                .mapToInt(e -> e)
+                .sum();
+    }
+
+    /**
+     * Empty the list from the stones.
      *
      * @param mancalaGame mancalaGame
-     *
-     * @return count all the empty pits
+     * @param pits        player pits
      */
-    private long countAllEmptyPitsForPlayer(final MancalaGame mancalaGame, MancalaPlayer player) {
-        List<PitPlace> pits;
-        if (player.getPlayerId().equals(PLAYER_1.getPlayerId())) {
-            pits = List.of(PLAYER_ONE_PIT_A, PLAYER_ONE_PIT_B, PLAYER_ONE_PIT_C, PLAYER_ONE_PIT_D, PLAYER_ONE_PIT_E,
-                           PLAYER_ONE_PIT_F);
-        } else {
-            pits = List.of(PLAYER_TWO_PIT_U, PLAYER_TWO_PIT_V, PLAYER_TWO_PIT_W, PLAYER_TWO_PIT_X, PLAYER_TWO_PIT_Y,
-                           PLAYER_TWO_PIT_Z);
-        }
-        return mancalaGame.getPits()
+    private void emptyGamePitsFromStonesForPlayer(final MancalaGame mancalaGame, final List<PitPlace> pits) {
+        final var emptiedPits = mancalaGame.getPits()
                 .stream()
-                .filter(p -> pits.contains(p.getPitPlace()))
-                .filter(p -> p.getStones() == 0)
-                .count();
+                .map(p -> pits.contains(p.getPitPlace()) ? p.toBuilder().stones(0).build() : p)
+                .collect(Collectors.toList());
+        mancalaGame.setPits(emptiedPits);
     }
 
     /**

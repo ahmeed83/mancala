@@ -27,35 +27,35 @@
     },
     {
       "pitPlace": "PLAYER_ONE_PIT_BIG",
-      "stones": 30
+      "stones": 21
     },
     {
       "pitPlace": "PLAYER_TWO_PIT_U",
-      "stones": 6
+      "stones": 0
     },
     {
       "pitPlace": "PLAYER_TWO_PIT_V",
-      "stones": 6
+      "stones": 0
     },
     {
       "pitPlace": "PLAYER_TWO_PIT_W",
-      "stones": 6
+      "stones": 0
     },
     {
       "pitPlace": "PLAYER_TWO_PIT_X",
-      "stones": 6
+      "stones": 0
     },
     {
       "pitPlace": "PLAYER_TWO_PIT_Y",
-      "stones": 6
+      "stones": 0
     },
     {
       "pitPlace": "PLAYER_TWO_PIT_Z",
-      "stones": 6
+      "stones": 0
     },
     {
       "pitPlace": "PLAYER_TWO_PIT_BIG",
-      "stones": 15
+      "stones": 20
     }
   ],
   "player": "PLAYER_1",

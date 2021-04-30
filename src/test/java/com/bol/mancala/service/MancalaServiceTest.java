@@ -519,14 +519,19 @@ class MancalaServiceTest {
                                                                                                   .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_D ? p.toBuilder().stones(0).build() : p)
                                                                                                   .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_E ? p.toBuilder().stones(0).build() : p)
                                                                                                   .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_F ? p.toBuilder().stones(1).build() : p)
-                                                                                                  .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_BIG ? p.toBuilder().stones(9).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_U ? p.toBuilder().stones(1).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_V ? p.toBuilder().stones(1).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_W ? p.toBuilder().stones(1).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_X ? p.toBuilder().stones(1).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_Y ? p.toBuilder().stones(1).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_Z ? p.toBuilder().stones(1).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_BIG ? p.toBuilder().stones(20).build() : p)
                                                                                                   .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_BIG ? p.toBuilder().stones(5).build() : p)
                                                                                                   .collect(Collectors.toList()))
                                                                                     .build()));
         // When
         final MancalaGame mancalaGame = mancalaService.updateGame(stringMancalaUUID, PLAYER_ONE_PIT_F);
         // Then
-        //TODO: add test
         assertThat(mancalaGame.getPlayerWinner()).isSameAs(PLAYER_1);
     }
     
@@ -538,20 +543,25 @@ class MancalaServiceTest {
                                                                                     .playerId(2)
                                                                                     .pits(mancalaEntity.getPits()
                                                                                                   .stream()
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_A ? p.toBuilder().stones(1).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_B ? p.toBuilder().stones(1).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_C ? p.toBuilder().stones(1).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_D ? p.toBuilder().stones(1).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_E ? p.toBuilder().stones(1).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_F ? p.toBuilder().stones(1).build() : p)
                                                                                                   .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_U ? p.toBuilder().stones(0).build() : p)
                                                                                                   .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_V ? p.toBuilder().stones(0).build() : p)
                                                                                                   .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_W ? p.toBuilder().stones(0).build() : p)
                                                                                                   .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_X ? p.toBuilder().stones(0).build() : p)
                                                                                                   .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_Y ? p.toBuilder().stones(0).build() : p)
                                                                                                   .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_Z ? p.toBuilder().stones(1).build() : p)
-                                                                                                  .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_BIG ? p.toBuilder().stones(9).build() : p)
                                                                                                   .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_BIG ? p.toBuilder().stones(5).build() : p)
+                                                                                                  .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_BIG ? p.toBuilder().stones(20).build() : p)
                                                                                                   .collect(Collectors.toList()))
                                                                                     .build()));
         // When
         final MancalaGame mancalaGame = mancalaService.updateGame(stringMancalaUUID, PLAYER_TWO_PIT_Z);
         // Then
-        //TODO: add test
         assertThat(mancalaGame.getPlayerWinner()).isSameAs(PLAYER_2);
     }
 }

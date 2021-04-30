@@ -27,7 +27,7 @@
     },
     {
       "pitPlace": "PLAYER_ONE_PIT_BIG",
-      "stones": 20
+      "stones": 21
     },
     {
       "pitPlace": "PLAYER_TWO_PIT_U",
@@ -55,9 +55,9 @@
     },
     {
       "pitPlace": "PLAYER_TWO_PIT_BIG",
-      "stones": 21
+      "stones": 24
     }
   ],
-  "player": "PLAYER_2",
+  "player": "PLAYER_1",
   "playerWinner": "PLAYER_2"
 }
