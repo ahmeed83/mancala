@@ -302,40 +302,51 @@ public class MancalaService {
     /**
      * Check if the pits of the current player or the opponent player are empty. If so decide the winner
      * based on the total of the stones in each big pit. The total will be counted based on all pits available.
-     * After the the stones are add to opponent player, empty the pit list.
+     * After the stones are added to the opponent player, empty the pit list.
      * The one who has more stones in his own big bit, is the winner. After adding the winner,
      * delete the game from the database. If there is no winner, save the game again in the database.
      *
      * @param mancalaGame mancala game.
      */
     private void setWinnerIfAnyAndUpdateEntity(final MancalaGame mancalaGame) {
-        final var bigBitPlayer1 = mancalaGame.getPitGame(PLAYER_ONE_PIT_BIG.ordinal());
-        final var bigBitPlayer2 = mancalaGame.getPitGame(PLAYER_TWO_PIT_BIG.ordinal());
+        final var bigPitPlayer1 = mancalaGame.getPitGame(PLAYER_ONE_PIT_BIG.ordinal());
+        final var bigPitPlayer2 = mancalaGame.getPitGame(PLAYER_TWO_PIT_BIG.ordinal());
         List<PitPlace> pitsPlayer1 = List.of(PLAYER_ONE_PIT_A, PLAYER_ONE_PIT_B, PLAYER_ONE_PIT_C, PLAYER_ONE_PIT_D,
                                              PLAYER_ONE_PIT_E, PLAYER_ONE_PIT_F);
         List<PitPlace> pitsPlayer2 = List.of(PLAYER_TWO_PIT_U, PLAYER_TWO_PIT_V, PLAYER_TWO_PIT_W, PLAYER_TWO_PIT_X,
                                              PLAYER_TWO_PIT_Y, PLAYER_TWO_PIT_Z);
 
         if (arePitsEmptyForPlayer(mancalaGame.getPits(), pitsPlayer1)) {
-            bigBitPlayer2.addStonesToBigPit(getSumStonesForPlayer(mancalaGame.getPits(), pitsPlayer2));
+            bigPitPlayer2.addStonesToBigPit(getSumStonesForPlayer(mancalaGame.getPits(), pitsPlayer2));
             emptyGamePitsFromStonesForPlayer(mancalaGame, pitsPlayer2);
-            if (bigBitPlayer1.getStones() > bigBitPlayer2.getStones()) {
-                mancalaGame.setPlayerWinner(PLAYER_1);
-            } else {
-                mancalaGame.setPlayerWinner(PLAYER_2);
-            }
+            setPlayerWinner(mancalaGame, bigPitPlayer1, bigPitPlayer2);
             mancalaRepository.delete(mapMancalaGameToMancalaEntity(mancalaGame));
         } else if (arePitsEmptyForPlayer(mancalaGame.getPits(), pitsPlayer2)) {
-            bigBitPlayer1.addStonesToBigPit(getSumStonesForPlayer(mancalaGame.getPits(), pitsPlayer1));
+            bigPitPlayer1.addStonesToBigPit(getSumStonesForPlayer(mancalaGame.getPits(), pitsPlayer1));
             emptyGamePitsFromStonesForPlayer(mancalaGame, pitsPlayer1);
-            if (bigBitPlayer1.getStones() > bigBitPlayer2.getStones()) {
-                mancalaGame.setPlayerWinner(PLAYER_1);
-            } else {
-                mancalaGame.setPlayerWinner(PLAYER_2);
-            }
+            setPlayerWinner(mancalaGame, bigPitPlayer1, bigPitPlayer2);
             mancalaRepository.delete(mapMancalaGameToMancalaEntity(mancalaGame));
         } else {
             mancalaRepository.save(mapMancalaGameToMancalaEntity(mancalaGame));
+        }
+    }
+
+    /**
+     * Set player winner based on the stones each big pit. If the stone amount is 
+     * equal. The winner will be the current player.
+     *
+     * @param mancalaGame   mancala game.
+     * @param bigPitPlayer1 big pit player 1
+     * @param bigPitPlayer2 big pit player 2
+     */
+    private void setPlayerWinner(final MancalaGame mancalaGame, final PitGame bigPitPlayer1,
+                                 final PitGame bigPitPlayer2) {
+        if (bigPitPlayer1.getStones() > bigPitPlayer2.getStones()) {
+            mancalaGame.setPlayerWinner(PLAYER_1);
+        } else if (bigPitPlayer1.getStones() < bigPitPlayer2.getStones()) {
+            mancalaGame.setPlayerWinner(PLAYER_2);
+        } else {
+            mancalaGame.setPlayerWinner(mancalaGame.getPlayer());
         }
     }
 

@@ -119,7 +119,7 @@ class MancalaApiTest {
     }
 
     @Test
-    @DisplayName("It should delete a Mancala gave Successfully via the endpoint")
+    @DisplayName("It should delete a Mancala game Successfully via the endpoint")
     void itShouldDeleteMancalaGame() throws Exception {
         // Given
         given(mancalaRepository.findById(mockUUID)).willReturn(Optional.of(mancalaEntity));
@@ -240,8 +240,8 @@ class MancalaApiTest {
     }
 
     @Test
-    @DisplayName("It should update Successfully when all pits of player 1 is empty from stones and he/she has more stones" +
-            " in his big pit than the opponent. Game will end" )
+    @DisplayName("It should update Successfully when all pits of player 1 are empty from stones and he/she has more stones" +
+            " in his big pit than the opponent so Player 1 wins. Game will end" )
     void itShouldDeterminePlayerOneIsWinner() throws Exception {
         // Given
         PlayTurnRequest requestBody = selectPit(PLAYER_ONE_PIT_F);
@@ -278,10 +278,50 @@ class MancalaApiTest {
                 .andExpect(jsonPath("$.*.*", hasSize(14)))
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(mancalaGame)));
     }
+
+    @Test
+    @DisplayName("It should update Successfully when all pits of player 1 are empty and he/she has the same amount of stones" +
+            " in his big pit as the opponent. But it was his/her last turn, so Player 1 wins. Game will end" )
+    void itShouldDeterminePlayerOneIsWinnerWhenStonesAreEqual() throws Exception {
+        // Given
+        PlayTurnRequest requestBody = selectPit(PLAYER_ONE_PIT_F);
+        MancalaGame mancalaGame = getMancalaGame("player1WinnerWhenStonesAreEqual.json");
+        given(mancalaRepository.findById(mockUUID)).willReturn(Optional.of(mancalaEntity.toBuilder()
+                                                                                   .pits(mancalaEntity.getPits()
+                                                                                                 .stream()
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_A ? p.toBuilder().stones(0).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_B ? p.toBuilder().stones(0).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_C ? p.toBuilder().stones(0).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_D ? p.toBuilder().stones(0).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_E ? p.toBuilder().stones(0).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_F ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_U ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_V ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_W ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_X ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_Y ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_Z ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_BIG ? p.toBuilder().stones(20).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_BIG ? p.toBuilder().stones(15).build() : p)
+                                                                                                 .collect(Collectors.toList()))
+                                                                                   .playerId(1)
+                                                                                   .build()));
+        // When
+        this.mockMvc.perform(post(UPDATE_GAME_PATH)
+                                     .contentType(APPLICATION_JSON)
+                                     .content(new ObjectMapper().writeValueAsString(requestBody)))
+                .andDo(print())
+        // Then
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.*", hasSize(4)))
+                .andExpect(jsonPath("$.*.*", hasSize(14)))
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(mancalaGame)));
+    }
     
     @Test
-    @DisplayName("It should update Successfully when all pits of player 1 is empty from stones and player2 has more stones" +
-            " in his big pit than the opponent. Game will end" )
+    @DisplayName("It should update Successfully when all pits of player 1 are empty from stones and player2 has more stones" +
+            " in his big pit than the opponent, so Player 2 wins. Game will end" )
     void itShouldDeterminePlayerTwoIsWinnerWhenPlayer1EndsGame() throws Exception {
         // Given
         PlayTurnRequest requestBody = selectPit(PLAYER_ONE_PIT_F);
@@ -450,8 +490,8 @@ class MancalaApiTest {
     }
 
     @Test
-    @DisplayName("It should update Successfully when all pits of player 2 is empty from stones and he/she has more stones" +
-            " in his big pit than the opponent. Game will end" )
+    @DisplayName("It should update Successfully when all pits of player 2 are empty from stones and he/she has more stones" +
+            " in his big pit than the opponent, so Player 2 wins. Game will end" )
     void itShouldDeterminePlayerTwoIsWinner() throws Exception {
         // Given
         PlayTurnRequest requestBody = selectPit(PLAYER_TWO_PIT_Z);
@@ -473,6 +513,46 @@ class MancalaApiTest {
                                                                                                  .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_Z ? p.toBuilder().stones(1).build() : p)
                                                                                                  .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_BIG ? p.toBuilder().stones(20).build() : p)
                                                                                                  .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_BIG ? p.toBuilder().stones(14).build() : p)
+                                                                                                 .collect(Collectors.toList()))
+                                                                                   .playerId(2)
+                                                                                   .build()));
+        // When
+        this.mockMvc.perform(post(UPDATE_GAME_PATH)
+                                     .contentType(APPLICATION_JSON)
+                                     .content(new ObjectMapper().writeValueAsString(requestBody)))
+                .andDo(print())
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.*", hasSize(4)))
+                .andExpect(jsonPath("$.*.*", hasSize(14)))
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(mancalaGamePlayer2Wins)));
+    }
+    
+    @Test
+    @DisplayName("It should update Successfully when all pits of player 2 are empty and he/she has the same amount of stones" +
+            " in his big pit as the opponent. But it was his/her last turn, so Player 2 wins. Game will end" )
+    void itShouldDeterminePlayerTwoIsWinnerWhenStonesAreEqual() throws Exception {
+        // Given
+        PlayTurnRequest requestBody = selectPit(PLAYER_TWO_PIT_Z);
+        MancalaGame mancalaGamePlayer2Wins = getMancalaGame("player2WinnerWhenStonesAreEqual.json");
+        given(mancalaRepository.findById(mockUUID)).willReturn(Optional.of(mancalaEntity.toBuilder()
+                                                                                   .pits(mancalaEntity.getPits()
+                                                                                                 .stream()
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_A ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_B ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_C ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_D ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_E ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_F ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_U ? p.toBuilder().stones(0).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_V ? p.toBuilder().stones(0).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_W ? p.toBuilder().stones(0).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_X ? p.toBuilder().stones(0).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_Y ? p.toBuilder().stones(0).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_Z ? p.toBuilder().stones(1).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_TWO_PIT_BIG ? p.toBuilder().stones(20).build() : p)
+                                                                                                 .map(p -> p.getPitPlace() == PLAYER_ONE_PIT_BIG ? p.toBuilder().stones(15).build() : p)
                                                                                                  .collect(Collectors.toList()))
                                                                                    .playerId(2)
                                                                                    .build()));
