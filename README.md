@@ -62,8 +62,11 @@ Application will start on
     1. One stone will be added to each next pit till there are no stones left. Big pits will be skipped for the opponent player.
     1. If the loop end at the last index of the game, and there are still stones left, restart the index to zero.
     1. The next player will be the opposite of the current player. Only if the last stone end at the own big pit of the player, he/she may have one more turn.
-    1. At the end of the turn and before returning the updated game, the game will check for the winner. It checks the list of the pits of each player if they are empty. If one of the pit lists of one of the players is empty, compare the total amount of each big pit, the one who has the most amount of stones wins.
-    1. If there is a winner, that means the game will end, and the application will delete the game from the database. It will return an updated game response with a filled field "PlayerWinner". The frontend will be checking this field for every response, and when it finds that this field is filled, it will show the winning message to the players with the winner player and end the game.
+    1. At the end of the turn and before returning the updated game, the game will check for the winner. It checks the list of the pits of each player if they are empty. If one of the pit lists of one of the players is empty, compare the total amount of each big pit,
+     the one who has the most amount of stones wins. The sum will be counted based on all the stones available. So even if player 1 ends the game and player 2 has in total (big pit + all the stones in the other pits) is more than player 1 big pit, player 2 wins. 
+    1. If the count of the stones is equal for both big pits, the one who ends the game wins.
+    1. If there is a winner, that means the game will end, and the application will delete the game from the database. It will return an updated game response with a filled field "PlayerWinner". The front-end will be checking this field for every response,
+     and when it finds that this field is filled, it will show the winning message to the players with the winner player and end the game.
     1. If there is no winner, the application will save the game in the database and return the list of the updated game to the frontend. The "PlayerWinner" field will remain empty.
 
 ## Author: Ahmed Aziz
