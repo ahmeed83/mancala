@@ -1,7 +1,7 @@
 
-# Mancala Game Ahmed Aziz for bol.com project
+# Mancala Game
 
-This project is part of the bol.com job application for Ahmed Aziz.
+Mancala game project
 
 ## Tech Stack
 **Client:** React, TailwindCSS
